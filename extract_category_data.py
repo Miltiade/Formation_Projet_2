@@ -8,13 +8,14 @@ response = requests.get(url)
 soup = BeautifulSoup(response.content, 'html.parser')
 books = soup.find_all('article', {'class': 'product_pod'})
 
-# Récupérer toutes les URL des liens depuis la page Catégorie
+# I. Récupérer toutes les URL des liens depuis la page Catégorie
 Books_URL = soup.find_all('a')
 for link in Books_URL:
     print(link.get('href'))
 
-# Encapsuler le script de l'étape 1 dans une fonction
+# II. Encapsuler le script de l'étape 1 dans une fonction / Passer l'URL à mon code qui parse les pages Livre
 
+# Définir la fonction
 def scrape_data(books):
     ##a) Récupération de "product_page_url"
     product_page_url = books
@@ -44,7 +45,7 @@ def scrape_data(books):
     review_rating = div.find("p", class_="star-rating").attrs["class"][1]
     # Récupération de image_url
     image_url = books.find("img").attrs["src"]
-    # Définition, comme variables, de la ligne dite "header" et de la ligne dite "données"
+    # Définir, comme variables, la ligne dite "header" et la ligne dite "données"
     header = [
         "product_page_url",
         "universal_product_code",
@@ -56,7 +57,7 @@ def scrape_data(books):
         "category",
         "review_rating",
         "image_url",
-    ]
+        ]
     values = [
         product_page_url,
         universal_product_code,
@@ -68,9 +69,8 @@ def scrape_data(books):
         category,
         review_rating,
         image_url,
-    ]
-    ## ECRIRE LES DONNEES DANS UN FICHIER
-    # Ecrire la ligne "header" et la ligne "données" dans le fichier CSV
+        ]
+    return
     with open("data_produit.csv","w") as file:
         csv_writer = csv.writer(file)
         csv_writer.writerow(header)

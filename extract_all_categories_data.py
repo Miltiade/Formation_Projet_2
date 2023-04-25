@@ -1,15 +1,21 @@
+# Import relevant libraries
 import requests
 import csv
 from bs4 import BeautifulSoup
 
+# Define URL
 url = "http://books.toscrape.com/catalogue/category/books/nonfiction_13/index.html"
 
+# Declare empty list
 books = []
 
+# Create Soup object that will be parsed
 response = requests.get(url)
 
+# Parse the page
 soup = BeautifulSoup(response.content, 'html.parser')
 books += soup.find_all('article', {'class': 'product_pod'})
+# Parse the next pages
 while soup.find('li', {'class': 'next'}):
     next_url = soup.find('li', {'class': 'next'}).find('a').get('href')
     url = "/".join(url.split('/')[:-1]) + '/' + next_url
@@ -18,38 +24,33 @@ while soup.find('li', {'class': 'next'}):
     soup = BeautifulSoup(response.content, 'html.parser')
     books += soup.find_all('article', {'class': 'product_pod'})
 
-# II. Encapsuler le script de l'étape 1 dans une fonction / Passer l'URL à mon code qui parse les pages Livre
-
-# Définir la fonction
+# Define function to scrape data
 def scrape_data(product_page_url):
-    ##a) Récupération de "product_page_url"
+    # product_page_url
     response = requests.get(product_page_url)
     book = BeautifulSoup(response.content, 'html.parser')
-    ##b) Récupération de "universal_ product_code (upc)"
+    # universal_ product_code (upc)
     universal_product_code = book.find("table", class_="table table-striped").find("td").text
-    ##c) Récupération de "title"
+    # title
     div = book.find("div", class_="product_main")
     title = div.find("h1").text
-    ##d) Récupération... des données qui se trouvent dans la même zone de la page web (i.e. "table")
-    # Définition du périmètre de ladite zone
+    # price_including_tax
     table = book.find("table", class_="table table-striped")
     table_td = table.find_all("td")
-    # Récupération de price_including_tax
     price_including_tax = table_td[3].text
-    # Récupération de price_excluding_tax
+    # price_excluding_tax
     price_excluding_tax = table_td[2].text
-    # Récupération de number_available
+    # number_available
     number_available = table_td[5].text
-    ##e) Récupération des données qui se trouvent ailleurs dans la page
-    # Récupération de product_description
+    # product_description
     product_description = book.find_all("p")[3].text
-    # Récupération de category
+    # category
     category = book.find_all("a")[3].text
-    # Récupération de review_rating
+    # review_rating
     review_rating = div.find("p", class_="star-rating").attrs["class"][1]
-    # Récupération de image_url
+    # image_url
     image_url = book.find("img").attrs["src"]
-    # Définir, comme variables, la ligne dite "header" et la ligne dite "données"
+    # Declare return value
     return [
         product_page_url,
         universal_product_code,
@@ -63,7 +64,7 @@ def scrape_data(product_page_url):
         image_url,
     ]
 
-# Appeler la fonction
+# Call function and write data to csv file
 header = [
     "product_page_url",
     "universal_product_code",
@@ -87,4 +88,10 @@ with open("data_produit.csv","w") as file:
     csv_writer.writerow(header)
     csv_writer.writerows(values)
 
-print("Data has been scraped and written to 'data_produit.csv' file.")
+# Setup loop to scrape data from all pages:
+while soup.find('li', {'class': 'next'}):
+    next_url = soup.find('li', {'class': 'next'}).find('a').get('href')
+    url = "/".join(url.split('/')[:-1]) + '/' + next_url
+    response = requests.get(url)
+
+print("Data has been scraped and written to csv file.")

@@ -5,3 +5,6 @@
 tests/utils/__pycache__/test_url.cpython-311-pytest-7.3.1.pyc
 utils/__pycache__/test_url.cpython-311-pytest-7.3.1.pyc
 utils/__pycache__/url.cpython-311.pyc
+
+images/*
+__pycache__

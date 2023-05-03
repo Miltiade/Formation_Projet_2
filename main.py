@@ -4,17 +4,18 @@ from utils.category import scrape_category
 from utils.extract_categories_urls import extract_categories_url
 
 # Define URL of website to scrape
-url = "http://books.toscrape.com/index.html"
+index_url = "http://books.toscrape.com/index.html"
 
 # From the website's homepage : extract urls of all books categories
-extract_categories_url(url)
+# extract_categories_url(url)
 
 # Create a "for" loop code on url below
-for url in extract_categories_url(url):
-    scrape_category(url)
+for url in extract_categories_url(index_url):
+    print(url)
+    values = scrape_category(url)
 
 # Extract category data for url
-values= scrape_category(url)
+# values= scrape_category(url)
 # Write csv file with data
     # Call function and write data to csv file
 header = [

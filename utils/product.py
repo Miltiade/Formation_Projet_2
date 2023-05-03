@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 
 # Define function to scrape data
 def scrape(product_page_url):
+    print(product_page_url)
     # product_page_url
     response = requests.get(product_page_url)
     book = BeautifulSoup(response.content, 'html.parser')

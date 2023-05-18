@@ -1,7 +1,8 @@
-import requests
-from url import extract_image_name_from_url
+'''A script to download and save image file of each product'''
 
-# Download and save image file of each product
+import requests
+from .url import extract_image_name_from_url
+
 def download(url):
     response = requests.get(url)
     if response.ok:

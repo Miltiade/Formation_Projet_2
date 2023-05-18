@@ -1,9 +1,9 @@
+# A function to scrape data from a single book's webpage
+
 import requests
 from bs4 import BeautifulSoup
 
-# Define function to scrape data
 def scrape(product_page_url):
-    print(product_page_url)
     # product_page_url
     response = requests.get(product_page_url)
     book = BeautifulSoup(response.content, 'html.parser')
@@ -41,3 +41,8 @@ def scrape(product_page_url):
         review_rating,
         image_url,
     ]
+
+# TESTING THE FUNCTION ON A SPECIFIC URL:
+# product_page_url = "https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html"
+# result = scrape(product_page_url)
+# print(result)

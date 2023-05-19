@@ -27,7 +27,6 @@ def extract_categories_url(url):
     return categories_urls
 
 category_urls = extract_categories_url(url)
-print(category_urls)
 
 # extract_categories_url(url)
 

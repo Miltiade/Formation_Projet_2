@@ -2,7 +2,7 @@
 
 import requests
 from bs4 import BeautifulSoup
-from product import scrape as scrape_product
+from utils.scrape_product import scrape as scrape_product
 
 def scrape_category(url):  
     # Declare empty list
@@ -26,7 +26,7 @@ def scrape_category(url):
         values.append(scrape_product(url))
     return values
 
-# # TESTING THE FUNCTION ON A SPECIFIC URL:
+# TESTING THE FUNCTION ON A SPECIFIC URL:
 # url = "https://books.toscrape.com/catalogue/category/books/sequential-art_5/index.html"
 # result = scrape_category(url)
 # print(result)

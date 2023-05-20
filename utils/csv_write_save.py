@@ -6,7 +6,7 @@
 from pathlib import Path
 from csv import writer
 
-def generate(header,values,filename="data.csv"):
+def generate_and_save(header,values,filename="data.csv"):
     # # Define variable "values" of output CSV file
     # values = []
     # # Define variable "header" of output CSV file
@@ -28,7 +28,8 @@ def generate(header,values,filename="data.csv"):
     sequential_art_images_directory = sequential_art_directory / "images"
     sequential_art_images_directory.mkdir(parents=True, exist_ok=True)
     print("directories created successfully!")
-    with open(filename, 'w', newline="") as csvfile:
+    file_path = sequential_art_directory/filename
+    with open(file_path, 'w', buffering=-1) as csvfile:
         csv_writer = writer(csvfile)
         csv_writer.writerow(header)
         csv_writer.writerows(values)

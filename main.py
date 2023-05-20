@@ -2,13 +2,12 @@
 -- Generate 1 CSV file (containing scraped data) for one book category
 -- Download every book's image"""
 
-from utils.csv_write_save import generate
 from utils.scrape_category import scrape_category
 # from utils.extract_categories_urls import extract_categories_url
 # from utils.url import extract_category_name
 from utils.create_output_files_directory import create_output_files_directory
 from utils.create_category_directories import create_category_directories
-from utils.csv_write_save import generate
+from utils.csv_write_save import generate_and_save
 
 # For ONE category: scrape all books data and generate CSV file
 
@@ -37,7 +36,6 @@ header = [
         ]
 values = [result]
 for book_data in values:
-    directory = "category_sequential_art"
-    generate(header, book_data, directory)
-print("file generated successfully!")
-#5. Download every book's image. Save it in "category_sequential_art" directory
+    generate_and_save(header, book_data)
+print("file generated and saved successfully! Evohe! Onnea!")
+#5. For every book in the category: save image in "category_sequential_art" directory

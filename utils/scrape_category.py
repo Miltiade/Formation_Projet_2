@@ -1,9 +1,7 @@
 '''A function that scrapes, from a Books category page, all the books' requested data'''
-
 import requests
 from bs4 import BeautifulSoup
-from utils.scrape_product import scrape as scrape_product
-
+from scrape_product import scrape
 def scrape_category(url):  
     # Declare empty list
     books = []
@@ -23,19 +21,13 @@ def scrape_category(url):
     for link in books:
         url = link.find('a').get("href")
         url = "http://books.toscrape.com/catalogue/" + url[9:]
-        values.append(scrape_product(url))
+        values.append(scrape(url))
     return values
 
-# TESTING THE FUNCTION ON A SPECIFIC URL:
-# url = "https://books.toscrape.com/catalogue/category/books/sequential-art_5/index.html"
-# result = scrape_category(url)
-# print(result)
-
 '''A function that:
--- creates directories
+-- creates local directories
 -- generates 1 CSV file with scraped data as values
 -- and saves the CSV file in one of the directories '''
-
 from pathlib import Path
 from csv import writer
 HEADER = [
@@ -65,10 +57,11 @@ def generate_and_save(values,filename="data.csv"):
         csv_writer.writerows(values)
     return ("file created successfully!")
 
-'''A script to download and save image file of each product'''
-
+'''A function that downloads and saves image file of each book.
+NB1: filename = [booksUPC].jpeg
+NB2: file saved in "[category]/images/" directory'''
 import requests
-from .url import extract_image_name_from_url
+from url import extract_image_name_from_url
 def download(url):
     response = requests.get(url)
     if response.ok:
@@ -77,3 +70,12 @@ def download(url):
             file.write(response.content)
     else:
         print("Erreur lors du téléchargement de l'image")
+
+#TESTING:
+url = "https://books.toscrape.com/catalogue/category/books/sequential-art_5/index.html"
+result = scrape_category(url)
+print(result)
+result2 = generate_and_save(url)
+print(result2)
+result3 = download(url)
+print(result3)

@@ -1,4 +1,4 @@
-# A function that scrapes, from a Books category page, all the books' requested data
+'''A function that scrapes, from a Books category page, all the books' requested data'''
 
 import requests
 from bs4 import BeautifulSoup
@@ -30,3 +30,37 @@ def scrape_category(url):
 # url = "https://books.toscrape.com/catalogue/category/books/sequential-art_5/index.html"
 # result = scrape_category(url)
 # print(result)
+
+'''A function that:
+-- creates directories
+-- generates 1 CSV file with scraped data as values
+-- and saves the CSV file in one of the directories '''
+
+from pathlib import Path
+from csv import writer
+HEADER = [
+        "product_page_url",
+        "universal_product_code",
+        "title",
+        "price_including_tax",
+        "price_excluding_tax",
+        "number_available",
+        "product_description",
+        "category",
+        "review_rating",
+        "image_url",
+        ]
+CATEGORY_INDEX = 7
+def generate_and_save(values,filename="data.csv"):
+    base_directory = Path("output_files")
+    directory = base_directory / values[0][CATEGORY_INDEX]
+    directory.mkdir(parents=True, exist_ok=True)
+    images_directory = directory / "images"
+    images_directory.mkdir(parents=True, exist_ok=True)
+    print("directories created successfully!")
+    file_path = directory/filename
+    with open(file_path, 'w', buffering=-1) as csvfile:
+        csv_writer = writer(csvfile)
+        csv_writer.writerow(HEADER)
+        csv_writer.writerows(values)
+    return ("file created successfully!")

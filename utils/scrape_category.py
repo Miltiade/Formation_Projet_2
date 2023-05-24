@@ -1,4 +1,46 @@
-'''A function that scrapes, from a Books category page, all the books' requested data'''
+'''A function that scrapes, from a Book page, all the book's requested data'''
+import requests
+from bs4 import BeautifulSoup
+def scrape(product_page_url):
+    # product_page_url
+    response = requests.get(product_page_url)
+    book = BeautifulSoup(response.content, 'html.parser')
+    # universal_ product_code (upc)
+    universal_product_code = book.find("table", class_="table table-striped").find("td").text
+    # title
+    div = book.find("div", class_="product_main")
+    title = div.find("h1").text
+    # price_including_tax
+    table = book.find("table", class_="table table-striped")
+    table_td = table.find_all("td")
+    price_including_tax = table_td[3].text
+    # price_excluding_tax
+    price_excluding_tax = table_td[2].text
+    # number_available
+    number_available = table_td[5].text
+    # product_description
+    product_description = book.find_all("p")[3].text
+    # category
+    category = book.find_all("a")[3].text
+    # review_rating
+    review_rating = div.find("p", class_="star-rating").attrs["class"][1]
+    # image_url
+    image_url = book.find("img").attrs["src"]
+    # Declare return value
+    return [
+        product_page_url,
+        universal_product_code,
+        title,
+        price_including_tax,
+        price_excluding_tax,
+        number_available,
+        product_description,
+        category,
+        review_rating,
+        image_url,
+    ]
+
+'''A function that SCRAPES, from a Books category page, all the books' requested data'''
 import requests
 from bs4 import BeautifulSoup
 from scrape_product import scrape
@@ -25,9 +67,9 @@ def scrape_category(url):
     return values
 
 '''A function that:
--- creates local directories
+-- creates local DIRECTORIES
 -- generates 1 CSV file with scraped data as values
--- and saves the CSV file in one of the directories '''
+-- and SAVES the CSV file in one of the directories '''
 from pathlib import Path
 from csv import writer
 HEADER = [
@@ -57,7 +99,7 @@ def generate_and_save(values,filename="data.csv"):
         csv_writer.writerows(values)
     return ("file created successfully!")
 
-'''A function that downloads and saves image file of each book.
+'''A function that downloads and SAVES IMAGE FILE of each book.
 NB1: filename = [booksUPC].jpeg
 NB2: file saved in "[category]/images/" directory'''
 import requests
@@ -72,10 +114,10 @@ def download(url):
         print("Erreur lors du téléchargement de l'image")
 
 #TESTING:
-url = "https://books.toscrape.com/catalogue/category/books/sequential-art_5/index.html"
-result = scrape_category(url)
-print(result)
-result2 = generate_and_save(url)
-print(result2)
-result3 = download(url)
-print(result3)
+# url = "https://books.toscrape.com/catalogue/category/books/sequential-art_5/index.html"
+# result = scrape_category(url)
+# print(result,"data scraped successfully! :)")
+# result2 = generate_and_save(url)
+# print(result2)
+# result3 = download(url)
+# print(result3)

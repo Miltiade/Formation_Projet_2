@@ -2,6 +2,15 @@
 -- Generate 1 CSV file (containing scraped data) for one book category
 -- Download every book's image"""
 
+'''TO-DO:
+-DONE: Modification de l'architecture : Mettre la fonction de création du CSV dans le module scrape_category
+- Téléchargement des images d'une catégorie dans le dossier image : 
+    - Tout d'abord pour la catégorie sequantial_art
+    - Mettre la/les fonctions dans le module scrape_category
+- Rendre la fonction de téléchargement des images générique (indépendant de séquential_art)
+- Créer une fonction avec en argument l'url de la catégorie (Scraping de tous les livres, l'écriture du CSV et le téléchargement des images)
+Bonus : Vérifier si tu récupères l'ensemble des urls de chaque catégorie + Mettre en place la boucle finale'''
+
 from utils.scrape_category import scrape_category
 # from utils.extract_categories_urls import extract_categories_url
 # from utils.url import extract_category_name

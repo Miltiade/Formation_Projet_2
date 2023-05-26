@@ -1,4 +1,6 @@
-'''A function that scrapes, from a Book page, all the book's requested data'''
+'''A script that scrapes data from a Books category webpage, then saves scraped data in a CSV file, then saves each book's image'''
+
+'''1. A function that scrapes, from a Book page, all the book's requested data'''
 import requests
 from bs4 import BeautifulSoup
 def scrape(product_page_url):
@@ -40,10 +42,9 @@ def scrape(product_page_url):
         image_url,
     ]
 
-'''A function that SCRAPES, from a Books category page, all the books' requested data'''
+'''2. A function that SCRAPES, from a Books category page, all the books' requested data'''
 import requests
 from bs4 import BeautifulSoup
-from scrape_product import scrape
 def scrape_category(url):  
     # Declare empty list
     books = []
@@ -66,7 +67,7 @@ def scrape_category(url):
         values.append(scrape(url))
     return values
 
-'''A function that:
+'''3. A function that:
 -- creates local DIRECTORIES
 -- generates 1 CSV file with scraped data as values
 -- and SAVES the CSV file in one of the directories '''
@@ -89,35 +90,40 @@ def generate_and_save(values,filename="data.csv"):
     base_directory = Path("output_files")
     directory = base_directory / values[0][CATEGORY_INDEX]
     directory.mkdir(parents=True, exist_ok=True)
-    images_directory = directory / "images"
-    images_directory.mkdir(parents=True, exist_ok=True)
-    print("directories created successfully!")
     file_path = directory/filename
     with open(file_path, 'w', buffering=-1) as csvfile:
         csv_writer = writer(csvfile)
         csv_writer.writerow(HEADER)
         csv_writer.writerows(values)
-    return ("file created successfully!")
+    for book_data in values:
+        image_url = book_data[9]
+        download(image_url, directory.name)
+    return ()
 
-'''A function that downloads and SAVES IMAGE FILE of each book.
+'''4. A function that downloads and SAVES IMAGE FILE of each book.
 NB1: filename = [booksUPC].jpeg
 NB2: file saved in "[category]/images/" directory'''
 import requests
-from url import extract_image_name_from_url
-def download(url):
+def extract_image_name_from_url(url):
+    return url.split('/')[-1]
+def download(url, category):
+    images_directory = Path("output_files") / category / "images"
+    images_directory.mkdir(parents=True, exist_ok=True)
     response = requests.get(url)
     if response.ok:
         name = extract_image_name_from_url(url)
-        with open("images/" + name, "wb") as file:
+        file_path = images_directory / name
+        with open(file_path, "wb") as file:
             file.write(response.content)
+            print(f"Image '{name}' downloaded successfully.")
     else:
         print("Erreur lors du téléchargement de l'image")
 
 #TESTING:
-# url = "https://books.toscrape.com/catalogue/category/books/sequential-art_5/index.html"
-# result = scrape_category(url)
-# print(result,"data scraped successfully! :)")
-# result2 = generate_and_save(url)
-# print(result2)
-# result3 = download(url)
-# print(result3)
+url = "https://books.toscrape.com/catalogue/category/books/sequential-art_5/index.html"
+result = scrape_category(url)
+print(result,"data scraped successfully! :)")
+result2 = generate_and_save(result)
+print(result2, "file saved successfully. Nice job!")
+result3 = download(url, result[0][CATEGORY_INDEX])
+print(result3, "images downloaded successfully. Cheers!")   

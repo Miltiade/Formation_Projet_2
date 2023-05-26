@@ -8,3 +8,5 @@ utils/__pycache__/url.cpython-311.pyc
 
 images/*
 __pycache__
+output_files/*
+!output_files/.gitkeep

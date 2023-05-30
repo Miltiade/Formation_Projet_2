@@ -1,0 +1,70 @@
+'''a function that downloads and saves the image file of each book in Sequential Art category:
+-- The function must check if a directory called "output_files" exists; if it does not, it must create it. Then the function must check if a subdirectory bearing the name of the current book category exists; if it does not, it must create it. Then the function must check if a sub-subdirectory called "images" exists; if it does not, it must create it.
+-- For each book, the file name must be the universal product code of the book (which can be parsed from the book's webpage).'''
+
+import os
+import requests
+from pathlib import Path
+from bs4 import BeautifulSoup
+from urllib.parse import urljoin, urlparse
+
+def download_book_images(url):
+    response = requests.get(url)
+    soup = BeautifulSoup(response.content, 'html.parser')
+
+    # Create the necessary directories
+    output_directory = Path("output_files")
+    output_directory.mkdir(exist_ok=True)
+
+    category = soup.select_one('.page-header.action > h1').text.strip().lower()
+    category_directory = output_directory / category
+    category_directory.mkdir(exist_ok=True)
+
+    images_directory = category_directory / "images"
+    images_directory.mkdir(exist_ok=True)
+
+    while True:
+        books = soup.find_all('article', class_='product_pod')
+        for book in books:
+            book_url = urljoin(url, book.find('h3').find('a')['href'])  # Get individual book URL
+            book_response = requests.get(book_url)
+            book_soup = BeautifulSoup(book_response.content, 'html.parser')
+            
+            image = book_soup.find('img')
+            image_url = urljoin(url, image['src'])  # Construct absolute image URL
+            book_title = book_soup.select_one('.product_main > h1').text.strip()
+            # book_code_element = book_soup.find('th', string='UPC').find_next_sibling('td')
+            # book_code = book_code_element.text.strip() if book_code_element else 'Unknown'
+            # book_code = book_soup.find("table", class_="table table-striped").find("td").text
+            # book_code_element = book_soup.select_one('html.no-js body#default.default div.container-fluid.page div.page_inner div.content div#content_inner article.product_page table.table.table-striped tbody tr td')
+            # book_code = book_code_element.text.strip()
+            soup = BeautifulSoup(response.content, 'html.parser')
+            table = soup.find('table', class_='table table-striped')
+            upc_row = table.find('tr', string='UPC')
+            upc_cell = upc_row.find_next_sibling('tr').find('td')
+            book_code = upc_cell.text.strip()
+
+
+            image_extension = os.path.splitext(urlparse(image_url).path)[-1]  # Extract file extension with dot
+            image_name = f"{book_code}{image_extension}"
+            file_path = images_directory / image_name
+
+            response = requests.get(image_url, stream=True)
+            if response.ok:
+                with open(file_path, "wb") as file:
+                    file.write(response.content)
+                print(f"Image '{image_name}' downloaded successfully for book '{book_title}'.")
+            else:
+                print(f"Error downloading image for book '{book_title}' with code '{book_code}'.")
+
+        next_page = soup.find('li', class_='next')
+        if next_page is None:
+            break
+
+        next_url = urljoin(url, next_page.find('a')['href'])  # Construct absolute URL for next page
+        response = requests.get(next_url)
+        soup = BeautifulSoup(response.content, 'html.parser')
+
+# TESTING
+url = 'https://books.toscrape.com/catalogue/category/books/sequential-art_5/index.html'
+download_book_images(url)

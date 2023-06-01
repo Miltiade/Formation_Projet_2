@@ -33,3 +33,8 @@ def scrape(product_page_url):
         review_rating,
         image_url,
     ]
+
+# TESTING FUNCTION
+# url = "https://books.toscrape.com/catalogue/the-boys-in-the-boat-nine-americans-and-their-epic-quest-for-gold-at-the-1936-berlin-olympics_992/index.html"
+# result = scrape(url)
+# print(result,"scraping finished")

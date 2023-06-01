@@ -2,16 +2,13 @@
 a script that scrapes data from a Books category webpage, 
 then saves scraped data in a CSV file, 
 then saves each book's image in a specified directory"""
-# main_single_category(url_de_la_categorie)
 
 import requests
 from bs4 import BeautifulSoup
 
-from scrape_book import scrape
+from utils.scrape_book import scrape
 
-"""2. A function that SCRAPES, from a Books category page, all the books' requested data"""
-
-
+"""A function that SCRAPES, from a Books category page, all the books' requested data"""
 def scrape_category(url):
     # Declare empty list
     books = []
@@ -34,14 +31,12 @@ def scrape_category(url):
         values.append(scrape(url))
     return values
 
-
-"""3. A function that:
+"""A function that:
 -- creates local DIRECTORIES
 -- generates 1 CSV file with scraped data as values
 -- and SAVES the CSV file in one of the directories """
 from pathlib import Path
 from csv import writer
-
 HEADER = [
     "product_page_url",
     "universal_product_code",
@@ -55,8 +50,6 @@ HEADER = [
     "image_url",
 ]
 CATEGORY_INDEX = 7
-
-
 def generate_and_save(values, filename="data.csv"):
     base_directory = Path("output_files")
     directory = base_directory / values[0][CATEGORY_INDEX]
@@ -68,13 +61,10 @@ def generate_and_save(values, filename="data.csv"):
         csv_writer.writerows(values)
     return ()
 
-
-"""4. A function that downloads and SAVES IMAGE FILE of each book.
+"""A function that downloads and SAVES IMAGE FILE of each book.
 NB1: filename = [booksUPC].jpeg
 NB2: file saved in "[category]/images/" directory"""
 import requests
-
-
 def download(upc, url, category):
     images_directory = Path("output_files") / category / "images"
     images_directory.mkdir(parents=True, exist_ok=True)
@@ -86,8 +76,6 @@ def download(upc, url, category):
             print(f"Image '{upc}' downloaded successfully.")
     else:
         print("Error")
-
-
 def download_category_images(values):
     category_name = values[0][7]
     for book_data in values:
@@ -97,21 +85,15 @@ def download_category_images(values):
         print(full_image_url)
         download(upc, full_image_url, category_name)
 
+# main_single_category(url_de_la_categorie)
+def main_single_category(url):
+    result = scrape_category(url)
+    result2 = generate_and_save(result)
+    result3 = download_category_images(result)
+
 
 # TESTING: MAIN_SINGLE_CATEGORY
-url = "https://books.toscrape.com/catalogue/category/books/sequential-art_5/index.html"
-result = scrape_category(url)
-print(result, "data scraped successfully! :)")
-# result2 = generate_and_save(result)
-# print(result2, "file saved successfully. Nice job!")
-result3 = download_category_images(result)
-print(result3, "images downloaded successfully. Cheers!")
-
-# Créer la fonction qui récupère l'URL de chaque catégorie. Puis: dans le "main", appeler la fonction "main_single_category".
-# Créer le fichier main. La seule URL qui y existera sera celle de la page d'accueil du site web.
-
-# Faire "correction PEP-8", avec flake8 et black
-# Re-modulariser les fonctions
-# Faire/modifier les docstrings
-
-# Préparer la soutenance
+# print("I heard you; processing...")
+# url = "https://books.toscrape.com/catalogue/category/books/sequential-art_5/index.html"
+# result = main_single_category(url)
+# print("all done! cheers!")

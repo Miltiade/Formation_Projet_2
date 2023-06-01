@@ -1,35 +1,43 @@
 """ A script to:
--- Generate 1 CSV file (containing scraped data) for one book category
--- Download every book's image"""
+-- generate 1 CSV file (containing scraped data) 
+-- and download every book's image
+for each book category"""
 
-'''TO-DO:
--DONE: Modification de l'architecture : Mettre la fonction de création du CSV dans le module scrape_category
-- Téléchargement des images d'une catégorie dans le dossier image : 
-    - Tout d'abord pour la catégorie sequantial_art
-    - Mettre la/les fonctions dans le module scrape_category
-- Rendre la fonction de téléchargement des images générique (indépendant de séquential_art)
-- Créer une fonction avec en argument l'url de la catégorie (Scraping de tous les livres, l'écriture du CSV et le téléchargement des images)
-Bonus : Vérifier si tu récupères l'ensemble des urls de chaque catégorie + Mettre en place la boucle finale'''
+from utils.extract_categories_urls import extract_categories_url
+from utils.scrape_category import main_single_category
 
-from utils.scrape_category import scrape_category
-# from utils.extract_categories_urls import extract_categories_url
-# from utils.url import extract_category_name
-from utils.create_output_files_directory import create_output_files_directory
-# from utils.create_category_directories import create_category_directories
+print("I heard you; processing now.")
 
-# For ONE category: scrape all books data and generate CSV file
+# Define homepage as webpage to scrape
+url = "https://books.toscrape.com/"
 
-#1. Define as variable the URL to scrape
-cat_url = "https://books.toscrape.com/catalogue/category/books/music_14/index.html"
-#2. Scrape products data from this URL
-result = scrape_category(cat_url)
+# From homepage, extract each book category's URL
+categories_URLs = extract_categories_url(url)
+print("Categories URL extracted!")
 
-#3.a. Create directory: "output_files/
-create_output_files_directory()
-#3.b. Create category directories: "output_files/category_sequential_art/ and "output_files/category_sequential_art/images
-# create_category_directories()
+# Loop through the book categories' URLs and call the data scraping function for each URL
+for url in categories_URLs:
+    main_single_category(url)
+print("all done! cheers!")
 
-#4.a. Generate CSV file with scraped product data; create adequate category directories; save it there
-generate_and_save(result)
-print("file generated and saved successfully! Evohe! Onnea!")
-#5. For every book in the category: save image in "category_sequential_art" directory
+# DONE: Créer la fonction qui récupère l'URL de chaque catégorie ("extract_categories_urls").
+# DONE Puis: dans le "main", appeler la fonction "main_single_category".
+# Créer le fichier main. La seule URL qui y existera sera celle de la page d'accueil du site web.
+
+# PROBLEME : quand on exécute main, le terminal répond:
+# "  File "/Users/zyggie/Documents/Git_Projet_2/Formation_Projet_2/utils/scrape_category.py", line 31, in scrape_category
+#     values.append(scrape(url))
+#                   ^^^^^^^^^^^
+#   File "/Users/zyggie/Documents/Git_Projet_2/Formation_Projet_2/utils/scrape_book.py", line 11, in scrape
+#     book.find("table", class_="table table-striped").find("td").text
+#     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+# AttributeError: 'NoneType' object has no attribute 'find'"
+# Pourquoi répond-il cela alors que, quand on exécute la fonction "scrape_book" dans le script éponyme,
+# il ne renvoie alors aucun message d'erreur ?
+# Autrement dit : pourquoi renvoie-t-il un message d'erreur ou non, suivant le script qu'on exécute?
+
+# Faire "correction PEP-8", avec flake8 et black
+# Re-modulariser les fonctions
+# Faire/modifier les docstrings
+
+# Préparer la soutenance

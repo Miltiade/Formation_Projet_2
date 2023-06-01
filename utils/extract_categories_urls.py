@@ -7,7 +7,6 @@ from urllib.parse import urljoin
 
 url = "http://books.toscrape.com/index.html"
 
-
 # Extract every book category's url
 def extract_categories_url(url):
     # Declare empty list
@@ -28,13 +27,9 @@ def extract_categories_url(url):
         categories_urls.append(category_url)
 
     return categories_urls
-
-
 category_urls = extract_categories_url(url)
 
-# extract_categories_url(url)
-
-# TESTING THE FUNCTION ON A SPECIFIC URL:
+# TESTING THE FUNCTION ON THE HOMEPAGE URL:
 # url = "http://books.toscrape.com/index.html"
 # result = extract_categories_url(url)
 # print(result)

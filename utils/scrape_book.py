@@ -1,4 +1,6 @@
-"""1. A function that scrapes, from a Book page, all the book's requested data"""
+"""A function that scrapes, from a Book page, all the book's requested data"""
+
+
 import requests
 from bs4 import BeautifulSoup
 
@@ -6,9 +8,8 @@ from bs4 import BeautifulSoup
 def scrape(product_page_url):
     response = requests.get(product_page_url)
     book = BeautifulSoup(response.content, "html.parser")
-
     universal_product_code = (
-        book.find("table", class_="table table-striped").find("td").text
+        book.find("th", string="UPC").find_parent().find("td").text.strip()
     )
     div = book.find("div", class_="product_main")
     title = div.find("h1").text
@@ -34,7 +35,8 @@ def scrape(product_page_url):
         image_url,
     ]
 
-# TESTING FUNCTION
-# url = "https://books.toscrape.com/catalogue/the-boys-in-the-boat-nine-americans-and-their-epic-quest-for-gold-at-the-1936-berlin-olympics_992/index.html"
+
+# # TESTING FUNCTION
+# url = "https://books.toscrape.com/catalogue/its-only-the-himalayas_981/index.html"
 # result = scrape(url)
 # print(result,"scraping finished")

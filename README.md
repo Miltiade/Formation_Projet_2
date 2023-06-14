@@ -1,4 +1,4 @@
-# P2_Book_to_Scrapt_PDellac
+# P2_Book_to_Scrape_PDellac
 # Programme de scraping d'informations d'un site e-commerce.
 
 Ce programme est une version beta d'un script permettant d'automatiser un système de surveillance des prix sur un site e-commerce de vente de livre : http://books.toscrape.com/. 

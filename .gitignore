@@ -11,3 +11,5 @@ __pycache__
 output_files
 output_files/*
 !output_files/.gitkeep
+
+.DS_Store
